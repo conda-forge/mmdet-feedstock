@@ -16,18 +16,18 @@ build:
 
 requirements:
   host:
-    - python >=3.7
     - pip
+    - python >=3.7
     - pytorch
   run:
-    - python >=3.7
+    - mmcv-full
     - numpy
+    - py-opencv
     - pycocotools
+    - python >=3.7
+    - pytorch
     - six
     - terminaltables
-    - mmcv-full
-    - py-opencv
-    - pytorch
 
 test:
   imports:
@@ -50,4 +50,5 @@ about:
 
 extra:
   recipe-maintainers:
+    - weiji14
     - apatsekin
