@@ -26,6 +26,7 @@ requirements:
     - pycocotools
     - python >=3.7
     - pytorch
+    - scipy
     - six
     - terminaltables
 
