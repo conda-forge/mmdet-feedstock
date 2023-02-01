@@ -1,5 +1,5 @@
 {% set name = "mmdet" %}
-{% set version = "2.27.0" %}
+{% set version = "2.28.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/open-mmlab/mmdetection/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 7d767976285a3acace77e42ef25a33d9d5e1b4c2ab9cbc5fda3166e47395c333
+  sha256: f04f80f0d14c588eaec6a89ec1b4340ed4a658a1955492ec2dab196a632a811f
 
 build:
   noarch: python
