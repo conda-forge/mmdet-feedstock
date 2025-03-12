@@ -38,11 +38,14 @@ test:
   source_files:
     - tests
   requires:
+    - instaboostfast
+    - memory_profiler
     - parameterized
     - pip
     - psutil
     - pytest
     - python {{ python_min }}
+    - scikit-learn
   commands:
     # - pip check  # disabled because mmengine on conda-forge is mmengine-lite
     - python -m pytest ./tests/
