@@ -38,7 +38,6 @@ test:
   source_files:
     - tests
   requires:
-    - instaboostfast
     - memory_profiler
     - parameterized
     - pip
