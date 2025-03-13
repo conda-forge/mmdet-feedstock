@@ -36,6 +36,7 @@ test:
   imports:
     - mmdet
   source_files:
+    - configs
     - tests
   requires:
     - memory_profiler
