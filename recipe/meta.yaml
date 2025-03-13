@@ -45,7 +45,9 @@ test:
     - psutil
     - pytest
     - python {{ python_min }}
+    - scikit-image
     - scikit-learn
+    - seaborn
   commands:
     # - pip check  # disabled because mmengine on conda-forge is mmengine-lite
     # Missing packages from conda-forge
