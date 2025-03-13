@@ -48,7 +48,12 @@ test:
     - scikit-learn
   commands:
     # - pip check  # disabled because mmengine on conda-forge is mmengine-lite
-    - python -m pytest ./tests/
+    # Missing packages from conda-forge
+    {% set tests_to_skip = "TestCorrupt" %}  # missing imagecorruptions dep
+    {% set tests_to_skip = tests_to_skip + " or TestDetInferencer" %}  # missing panopticapi dep
+    {% set tests_to_skip = tests_to_skip + " or TestInstaboost" %}  # missing instaboostfast dep
+    {% set tests_to_skip = tests_to_skip + " or TestMOTChallengeMetric" %}  # missing trackeval dep
+    - $PYTHON -m pytest --verbose -rxXs -k "not ({{ tests_to_skip }})" ./tests/
     - python -c "import mmdet; print(mmdet.__version__)"
 
 about:
