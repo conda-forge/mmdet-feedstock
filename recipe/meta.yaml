@@ -12,19 +12,20 @@ source:
 build:
   noarch: python
   script: {{ PYTHON }} -m pip install . -vv
-  number: 0
+  number: 1
 
 requirements:
   host:
     - pip
-    - python >=3.7
+    - python {{ python_min }}
     - pytorch
+    - setuptools
   run:
-    - mmcv
+    - mmcv <2.2.0  # https://github.com/open-mmlab/mmdetection/issues/11668
     - numpy
     - py-opencv
     - pycocotools
-    - python >=3.7
+    - python >={{ python_min }}
     - pytorch
     - scipy
     - shapely
@@ -35,10 +36,44 @@ requirements:
 test:
   imports:
     - mmdet
+  source_files:
+    # - configs
+    - tests
   requires:
+    - memory_profiler
+    - parameterized
     - pip
+    - psutil
+    - pytest
+    - python {{ python_min }}
+    - scikit-image
+    - scikit-learn
+    - seaborn
   commands:
-    - pip check
+    # - pip check  # disabled because mmengine on conda-forge is mmengine-lite
+    - ls -lh
+    # Missing packages from conda-forge
+    {% set tests_to_skip = "TestCorrupt" %}  # missing imagecorruptions dep
+    {% set tests_to_skip = tests_to_skip + " or TestDetInferencer" %}  # missing panopticapi dep
+    {% set tests_to_skip = tests_to_skip + " or TestInstaboost" %}  # missing instaboostfast dep
+    {% set tests_to_skip = tests_to_skip + " or TestMOTChallengeMetric" %}  # missing trackeval dep
+    # Incompatibilities since numpy 1.24 removed np.bool, np.float, np.long
+    # https://numpy.org/doc/1.24/release/1.24.0-notes.html#expired-deprecations
+    # https://numpy.org/doc/1.20/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated
+    {% set tests_to_skip = tests_to_skip + " or TestPackTrackInputs" %}  # np.bool
+    {% set tests_to_skip = tests_to_skip + " or TestYouTubeVISMetric" %}  # np.float
+    {% set tests_to_skip = tests_to_skip + " or test_rotate" %}  # np.float
+    {% set tests_to_skip = tests_to_skip + " or test_paa_head_loss" %}  # np.long
+    # Skip tests in some subfolders to workaround `Exception: Cannot find config path`
+    {% set folders_to_skip = "--ignore=tests/test_apis" %}
+    {% set folders_to_skip = folders_to_skip + " --ignore=tests/test_models/test_detectors" %}
+    {% set folders_to_skip = folders_to_skip + " --ignore=tests/test_models/test_mot" %}
+    {% set folders_to_skip = folders_to_skip + " --ignore=tests/test_models/test_reid" %}
+    {% set folders_to_skip = folders_to_skip + " --ignore=tests/test_models/test_roi_heads" %}
+    {% set folders_to_skip = folders_to_skip + " --ignore=tests/test_models/test_trackers" %}
+    {% set folders_to_skip = folders_to_skip + " --ignore=tests/test_models/test_tta" %}
+    {% set folders_to_skip = folders_to_skip + " --ignore=tests/test_models/test_vis" %}
+    - $PYTHON -m pytest --color=yes --verbose -rxXs {{ folders_to_skip }} -k "not ({{ tests_to_skip }})" tests/
     - python -c "import mmdet; print(mmdet.__version__)"
 
 about:
