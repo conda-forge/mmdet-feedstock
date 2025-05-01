@@ -50,12 +50,20 @@ test:
     - seaborn
   commands:
     # - pip check  # disabled because mmengine on conda-forge is mmengine-lite
+    - ls -lh
     # Missing packages from conda-forge
     {% set tests_to_skip = "TestCorrupt" %}  # missing imagecorruptions dep
     {% set tests_to_skip = tests_to_skip + " or TestDetInferencer" %}  # missing panopticapi dep
     {% set tests_to_skip = tests_to_skip + " or TestInstaboost" %}  # missing instaboostfast dep
     {% set tests_to_skip = tests_to_skip + " or TestMOTChallengeMetric" %}  # missing trackeval dep
-    - $PYTHON -m pytest --verbose -rxXs -k "not ({{ tests_to_skip }})" ./tests/
+    # Incompatibilities since numpy 1.24 removed np.bool, np.float, np.long
+    # https://numpy.org/doc/1.24/release/1.24.0-notes.html#expired-deprecations
+    # https://numpy.org/doc/1.20/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated
+    {% set tests_to_skip = tests_to_skip + " or TestPackTrackInputs" %}  # np.bool
+    {% set tests_to_skip = tests_to_skip + " or TestYouTubeVISMetric" %}  # np.float
+    {% set tests_to_skip = tests_to_skip + " or test_rotate" %}  # np.float
+    {% set tests_to_skip = tests_to_skip + " or test_paa_head_loss" %}  # np.long
+    - $PYTHON -m pytest --color=yes --verbose -rxXs -k "not ({{ tests_to_skip }})" tests/
     - python -c "import mmdet; print(mmdet.__version__)"
 
 about:
