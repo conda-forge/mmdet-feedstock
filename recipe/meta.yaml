@@ -19,6 +19,7 @@ requirements:
     - pip
     - python {{ python_min }}
     - pytorch
+    - setuptools
   run:
     - mmcv <2.2.0  # https://github.com/open-mmlab/mmdetection/issues/11668
     - numpy
